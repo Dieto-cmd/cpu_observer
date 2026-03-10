@@ -6,4 +6,4 @@
 
 
 void cpuReaderThread(SharedData& data);
-std::vector<int> parseCpuData(std::istream& input_stream);
+std::vector<unsigned long long> parseCpuData(std::istream& input_stream);

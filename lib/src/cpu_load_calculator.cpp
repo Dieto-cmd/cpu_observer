@@ -5,7 +5,7 @@
 
 
 
-double calculateCpuLoad(int idleTime, int totalTime){
+double calculateCpuLoad(unsigned long long idleTime, unsigned long long totalTime){
     if (totalTime == 0){
         return -1;
     }
@@ -14,10 +14,10 @@ double calculateCpuLoad(int idleTime, int totalTime){
 }
 
 void cpuLoadCalculatorThread(SharedData& data){
-    int prevIdleTime = 0;
-    int prevTotalTime = 0;
-    int idleTime;
-    int totalTime;
+    unsigned long long prevIdleTime = 0;
+    unsigned long long prevTotalTime = 0;
+    unsigned long long idleTime;
+    unsigned long long totalTime;
 
     while(true){
     
@@ -35,8 +35,8 @@ void cpuLoadCalculatorThread(SharedData& data){
     if(dataAquired){
         if(prevIdleTime != 0 && prevTotalTime != 0){
 
-        int idleDelta = idleTime - prevIdleTime; //how much time since last check was spent in idle state
-        int totalDelta = totalTime - prevTotalTime; //how much time sinc last check has passed
+        unsigned long long idleDelta = idleTime - prevIdleTime; //how much time since last check was spent in idle state
+        unsigned long long totalDelta = totalTime - prevTotalTime; //how much time sinc last check has passed
         double cpuLoad = calculateCpuLoad(idleDelta, totalDelta); //Calculating how much time was cpu occpied in %
         std::lock_guard<std::mutex> lock(data.mtx);
         data.percent = cpuLoad;

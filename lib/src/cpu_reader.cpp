@@ -8,16 +8,16 @@
 #include<thread>
 
 
-std::vector<int> parseCpuData(std::istream& input_stream) {
+std::vector<unsigned long long> parseCpuData(std::istream& input_stream) {
     std::string line;
-    std::vector<int> jiffies;
+    std::vector<unsigned long long> jiffies;
 
     if(getline(input_stream, line)){
         std::istringstream iss(line);
         std::string cpuLabel;
         iss >> cpuLabel; //First element of a string stream is "cpu"
 
-        int value;
+        unsigned long long value;
 
         while(iss >> value){
             jiffies.push_back(value);
@@ -37,7 +37,7 @@ void cpuReaderThread(SharedData& data) {
         return;
     }
 
-    std::vector<int> newJiffies = parseCpuData(file);
+    std::vector<unsigned long long> newJiffies = parseCpuData(file);
     if(!newJiffies.empty()){
         std::lock_guard<std::mutex> lock(data.mtx);
         data.jiffies = newJiffies;

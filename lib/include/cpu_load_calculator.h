@@ -2,5 +2,5 @@
 #include <vector>
 #include <shared_data.h>
 
-double calculateCpuLoad(int idleTime, int totalTime);
+double calculateCpuLoad(unsigned long long idleTime, unsigned long long totalTime);
 void cpuLoadCalculatorThread(SharedData& data);
