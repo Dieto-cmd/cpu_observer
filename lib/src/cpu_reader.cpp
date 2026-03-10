@@ -8,9 +8,28 @@
 #include<thread>
 
 
+std::vector<int> parseCpuData(std::istream& input_stream) {
+    std::string line;
+    std::vector<int> jiffies;
+
+    if(getline(input_stream, line)){
+        std::istringstream iss(line);
+        std::string cpuLabel;
+        iss >> cpuLabel; //First element of a string stream is "cpu"
+
+        int value;
+
+        while(iss >> value){
+            jiffies.push_back(value);
+        }
+    }
+    return jiffies;
+
+}
+
 
 void cpuReaderThread(SharedData& data) {
-    for (int i = 0; i < 2; i++){
+    for (int i = 0; i < 5; i++){
     std::ifstream file("/proc/stat");
 
     if (!file.is_open()) {
@@ -18,25 +37,16 @@ void cpuReaderThread(SharedData& data) {
         return;
     }
 
-    std::string line;
-
-    if(getline(file,line)){
-        std::istringstream iss(line);
-        std::string cpuLabel;
-        iss >> cpuLabel; //First element of a string stream is "cpu"
-
-        int value;
-
-        std::vector<int> jiffies;
-        while(iss >> value){
-            jiffies.push_back(value);
-        }
-        std::cout << "\nPrinting parameteres obtained from /proc/stat:\n";
-        std::cout << cpuLabel << " ";
-        for (auto item : jiffies) {
+    std::vector<int> newJiffies = parseCpuData(file);
+    if(!newJiffies.empty()){
+        std::lock_guard<std::mutex> lock(data.mtx);
+        data.jiffies = newJiffies;
+        for(auto item : newJiffies){
             std::cout << item << " ";
         }
+        std::cout << "\n";
     }
+    
 
     file.close();
     std::this_thread::sleep_for(std::chrono::seconds(1));
