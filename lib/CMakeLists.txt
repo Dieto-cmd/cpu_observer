@@ -1,0 +1,7 @@
+
+
+add_library(cpu_logic src/cpu_reader.cpp)
+
+target_include_directories(cpu_logic PUBLIC include)
+find_package(Threads REQUIRED)
+target_link_libraries(cpu_logic PRIVATE Threads::Threads)

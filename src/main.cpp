@@ -1,5 +1,10 @@
-#include<iostream>
+#include <iostream>
+#include <thread>
+#include "cpu_reader.h"
 
 int main() {
-    std::cout << "Hello WSL" << std::endl;
+    SharedData sharedData;
+    std::thread cpuReader(cpuReaderThread, std::ref(sharedData));
+
+    cpuReader.join();
 }
