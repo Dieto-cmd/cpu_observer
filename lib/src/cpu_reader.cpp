@@ -29,7 +29,7 @@ std::vector<int> parseCpuData(std::istream& input_stream) {
 
 
 void cpuReaderThread(SharedData& data) {
-    for (int i = 0; i < 5; i++){
+    for (; ;){
     std::ifstream file("/proc/stat");
 
     if (!file.is_open()) {
@@ -41,12 +41,7 @@ void cpuReaderThread(SharedData& data) {
     if(!newJiffies.empty()){
         std::lock_guard<std::mutex> lock(data.mtx);
         data.jiffies = newJiffies;
-        for(auto item : newJiffies){
-            std::cout << item << " ";
-        }
-        std::cout << "\n";
     }
-    
 
     file.close();
     std::this_thread::sleep_for(std::chrono::seconds(1));
