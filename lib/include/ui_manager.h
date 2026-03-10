@@ -1,3 +1,5 @@
 #pragma once
+#include "shared_data.h"
 
-void uiManagerThread(double percent);
+void drawBar(double percent);
+void uiManagerThread(SharedData& data);

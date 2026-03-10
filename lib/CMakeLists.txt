@@ -1,6 +1,6 @@
 
 
-add_library(cpu_logic src/cpu_reader.cpp src/cpu_load_calculator.cpp)
+add_library(cpu_logic src/cpu_reader.cpp src/cpu_load_calculator.cpp src/ui_manager.cpp)
 
 target_include_directories(cpu_logic PUBLIC include)
 find_package(Threads REQUIRED)

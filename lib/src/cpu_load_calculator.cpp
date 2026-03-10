@@ -1,9 +1,8 @@
 #include "cpu_load_calculator.h"
 #include <numeric>
-#include<iostream>
 #include<thread>
 #include<mutex>
-#include<iomanip>
+
 
 
 double calculateCpuLoad(int idleTime, int totalTime){
@@ -11,7 +10,7 @@ double calculateCpuLoad(int idleTime, int totalTime){
         return -1;
     }
     
-    return (static_cast<double>(totalTime - idleTime)/totalTime * 100); //Calculating how much time was cpu occpied in %
+    return (static_cast<double>(totalTime - idleTime)/totalTime * 100); 
 }
 
 void cpuLoadCalculatorThread(SharedData& data){
@@ -38,14 +37,9 @@ void cpuLoadCalculatorThread(SharedData& data){
 
         int idleDelta = idleTime - prevIdleTime; //how much time since last check was spent in idle state
         int totalDelta = totalTime - prevTotalTime; //how much time sinc last check has passed
-        double cpuLoad = calculateCpuLoad(idleDelta, totalDelta);
-        if (cpuLoad != -1){
-            std::cout << "Printing cpu load: " << std::fixed << std::setprecision(2) << cpuLoad << "%";
-        std::cout << "\n";
-        } else {
-            std::cout << "Couldn't get cpu load data" << "\n";
-        }
-        
+        double cpuLoad = calculateCpuLoad(idleDelta, totalDelta); //Calculating how much time was cpu occpied in %
+        std::lock_guard<std::mutex> lock(data.mtx);
+        data.percent = cpuLoad;
     }
 
     prevIdleTime = idleTime;

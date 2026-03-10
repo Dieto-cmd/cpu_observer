@@ -4,5 +4,6 @@
 
 struct SharedData {
     std::vector<int> jiffies; 
-    std::mutex mtx;            
+    double percent = -1;
+    std::mutex mtx;
 };
