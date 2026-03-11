@@ -4,26 +4,41 @@
 #include<string>
 #include<iostream>
 #include<iomanip>
+#include <ftxui/dom/elements.hpp>
+#include <ftxui/screen/screen.hpp>
 
-void drawBar(double percent) {
-    const int barWidth = 25;
-    int fill = (percent/100.0) * barWidth;
-    std::string color = "\033[32m"; // Green by default
-    if (percent > 50.0) color = "\033[33m"; // Yellow for medium load
-    if (percent > 85.0) color = "\033[31m"; // Red for high load
-    std::string colorReset = "\033[0m";
+void drawBar(double percent, std::string& resetPosition) {
+    float ratio = percent/100.0;
 
-    std::cout << "\rCPU: [";
-    for (int i = 0; i < barWidth; i++){
-        if (i < fill) std::cout << color << "|" << colorReset;
-        else std::cout << " ";
-    }
-    std::cout << "]" << color << std::fixed << std::setprecision(2) << percent;
-    std::cout <<"%" << colorReset << std::flush;
+    auto bar = ftxui::gauge(ratio) | ftxui::border;
+    auto barColor = ftxui::Color::Green;
+    if (percent > 50) barColor = ftxui::Color::Yellow;
+     if (percent > 85) barColor = ftxui::Color::Red;
 
+    auto decoratedBar = ftxui::hbox({
+        ftxui::text(" CPU: ") | ftxui::bold | ftxui::vcenter,
+        bar | ftxui::color(barColor),
+        ftxui::text(" " + std::to_string((int)percent) + "%") | ftxui::color(barColor) | ftxui::vcenter
+    });
+
+    auto screen = ftxui::Screen::Create(
+        ftxui::Dimension::Fixed(35),       // Width
+        ftxui::Dimension::Fit(decoratedBar) //Height
+    );
+
+    ftxui::Render(screen, decoratedBar);
+
+    std::cout << resetPosition;
+
+    screen.Print();
+
+    resetPosition = screen.ResetPosition();
+    
 }
 
 void uiManagerThread(SharedData& data){
+    std::string resetPosition = "";
+
     while(true){
         bool dataAquired = false;
         double percent;
@@ -35,7 +50,7 @@ void uiManagerThread(SharedData& data){
             }
         }
         if(dataAquired){
-            drawBar(percent);
+            drawBar(percent, resetPosition);
         }
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
