@@ -59,12 +59,17 @@ void drawBars(std::map<std::string, double> labeledPercentages, std::string& res
 
     auto allBars = ftxui::vbox(barList);
 
+    auto mainWindow = ftxui::window(
+        ftxui::text(" CPU Observer ") | ftxui::bold | ftxui::color(ftxui::Color::CadetBlue) ,
+        allBars
+    ) | ftxui::color(ftxui::Color::CadetBlue);
+
     auto screen = ftxui::Screen::Create(
-        ftxui::Dimension::Fixed(35),       // Width
-        ftxui::Dimension::Fit(allBars) //Height
+        ftxui::Dimension::Fixed(40),       // Width
+        ftxui::Dimension::Fit(mainWindow) //Height
     );
 
-    ftxui::Render(screen, allBars);
+    ftxui::Render(screen, mainWindow);
 
     std::cout << resetPosition;
 
