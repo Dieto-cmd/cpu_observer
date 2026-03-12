@@ -30,24 +30,31 @@ void drawBars(std::map<std::string, double> labeledPercentages, std::string& res
         double percent = element.second;
         std::string cpuLabel = element.first;
 
+        float ratio = percent/100.0;
+        
+        auto barColor = ftxui::Color::Green;
+        if (percent > 50) barColor = ftxui::Color::Yellow;
+        if (percent > 85) barColor = ftxui::Color::Red;
+        
         if(cpuLabel == "cpu"){
             std::transform(cpuLabel.begin(), cpuLabel.end(), cpuLabel.begin(), ::toupper);
+            auto bar = ftxui::gauge(ratio) | ftxui::border;
+            auto decoratedBar = ftxui::hbox({
+                ftxui::text(" " + cpuLabel + ": ") | ftxui::bold | ftxui::vcenter,
+                bar | ftxui::color(barColor),
+                ftxui::text(" " + std::to_string((int)percent) + "%") | ftxui::color(barColor) | ftxui::vcenter
+            });
+            barList.push_back(decoratedBar);
+        } else {
+            auto bar = ftxui::gauge(ratio);
+            auto decoratedBar = ftxui::hbox({
+                ftxui::text(" " + cpuLabel + ": ") | ftxui::bold | ftxui::vcenter,
+                bar | ftxui::color(barColor),
+                ftxui::text(" " + std::to_string((int)percent) + "%") | ftxui::color(barColor) | ftxui::vcenter,
+                ftxui::text("      ")
+            });
+            barList.push_back(decoratedBar);
         }
-
-        float ratio = percent/100.0;
-
-    auto bar = ftxui::gauge(ratio) | ftxui::border;
-    auto barColor = ftxui::Color::Green;
-    if (percent > 50) barColor = ftxui::Color::Yellow;
-     if (percent > 85) barColor = ftxui::Color::Red;
-
-    auto decoratedBar = ftxui::hbox({
-        ftxui::text(" " + cpuLabel + ": ") | ftxui::bold | ftxui::vcenter,
-        bar | ftxui::color(barColor),
-        ftxui::text(" " + std::to_string((int)percent) + "%") | ftxui::color(barColor) | ftxui::vcenter
-    });
-
-    barList.push_back(decoratedBar);
     }
 
     auto allBars = ftxui::vbox(barList);
