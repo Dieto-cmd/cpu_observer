@@ -1,5 +1,5 @@
 # CPU Observer
-
+A university project: **Multithreaded** application for monitoring CPU load and it's individual threads. Displayed as a Terminal User Interface (TUI).
 
 <p align="center">
 
@@ -13,7 +13,7 @@
 
 
 </br>
-A university project: Multithreaded application for monitoring cpu load.
+
 
 ## Tech Stack
 * **Programming Launguage:** C++ </br>
